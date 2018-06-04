@@ -9,4 +9,4 @@ adduser pc1
 #Habilita serviço SSH
 /etc/ssh/sshd_config
 
-/etc/init.d/ssh start
+#/etc/init.d/ssh start
