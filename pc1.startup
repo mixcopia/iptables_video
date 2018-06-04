@@ -1,0 +1,12 @@
+ifconfig eth0 10.0.4.2/24
+
+route add default gw 10.0.4.1
+
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+adduser pc1
+
+#Habilita serviço SSH
+/etc/ssh/sshd_config
+
+/etc/init.d/ssh start

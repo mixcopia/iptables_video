@@ -1,0 +1,130 @@
+tráfego na rede
+$ tcpdump -i eth0 -n
+
+ligar o roteamento das máquinas
+$ cd /proc/sys/net/ipv4
+
+$ cat ip_forward, por padrão netkit seta valor "1"
+vai ter valor "0"
+
+ligando o repasse de pacotes, ligando o roteamento da maquina
+$ echo 1 > ip_forward
+
+matar processos
+$ kill -9 1289
+
+listar regras
+$ iptables -L -n
+
+listar regras - mostra mais informações
+$ iptables -L -n -v
+
+para todos os serviços
+$ service iptables stop
+
+mostrar rotas
+$route -n
+
+Destination		Gateway			GenMask
+10.0.4.0		0.0.0.0			255.255.255.0
+#(falar com rede 4.0) 	(não requer roteador)	(mask padrão 24)
+0.0.0.0			10.0.4.1		0.0.0.0
+#(falar com qq rede)	(mande p/roteador 4.1)	(qq mask)
+
+mostrar pacotes do tipo icmp
+$ tcpdump -i eth0 -n icmp
+
+regra de NAT
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+#(tudo que sair pela eth1, mascarando o ip de origem, 
+
+iptables faz as regras top down (de cima para baixo)
+$ iptables -A FORWARD -p icmp -j DROP
+
+# -A -> Adicionar
+# FORWARD -> cadeia, fruto de um encaminhamento
+# -p -> protocolo
+# icmp -> tipo icmp, herdou de icm
+# -j -> Fazer
+# DROP -> quebra, corte, descarte
+
+adicionando, em baixo
+$ iptables -A FORWARD -p icmp -j ACCEPT
+
+# -j -> fazer
+# ACCEPT -> aceitar
+(vcs acham que vai resolver? )
+uma regra em cima da outra não funciona, o comando esta adicionando a tables em baixo do que já está.
+
+inserindo regra no topo da camada
+$ iptables -I FORWARD 1 -p icmp -j ACCEPT
+
+# -I -> insere regra
+# FORWARD 1 -> na primeira linha
+
+limpar regras da FORWARD, limpa tudo
+$ iptables -F FORWARD
+
+para navegar na internet precisa de (IP, mascara, rota, dns)
+firewall
+
+	*politica permicida
+
+
+	*politica restritiva
+
+mudando a politoca do iptables, bloqueia tudo
+$ iptables -P FORWARD DROP
+
+$ iptables -A FORWARD -p udp --dport 53 -i eth0 -j ACCEPT
+
+# --dport -> se ele estiver indo em direção a porta 53
+# -i -> vindo da interface eth0, interface de entrada (se veio da lan)
+# -j -> fazer
+# ACCEPT -> aceitar
+
+dw1 = $tcpdump -i eth0 -n udp and port 53
+pc1 = nslookup www.google.com.br
+(antes resolver /etc/resolv.conf add nameserver 8.8.8.8)
+
+# resolvendo domínio de nomes
+# nano /etc/resolv.conf
+# nameserver 8.8.8.8
+----
+# resolvendo domínio de nomes
+# nano /etc/hosts
+# 172.217.29.238 google.com www.google.com
+
+$ iptables -A FORWARD -p udp --sport 53 -i eth1 -j ACCEPT
+--s -> voltando, significado - source (origem)
+eth0 -> se veio da dw1
+
+só sabe resolver nomes
+
+pacote com destino
+$ iptables -A FORWARD -p tcp --dport 80 -i eth0 -j ACCEPT
+
+pacote retorno
+$ iptables -A FORWARD -p tcp --sport 80 -i eth1 -j ACCEPT
+
+com ip entrada , aceitando qq coisa do 20.129
+$ iptables -A FORWARD -d 192.168.20.129 -j ACCEPT
+
+# -d -> origem
+
+com ip retorno, aceitando qq coisa do 20.129
+$ iptables -A FORWARD -s 192.168.20.129 -j ACCEPT
+
+# -s -> volta
+
+
+
+
+
+
+
+
+
+
+
+
