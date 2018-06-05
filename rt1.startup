@@ -10,10 +10,18 @@ iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
 
 #iptables -A INPUT -p tcp -s 172.16.0.2 --dport 22 -j ACCEPT
 #iptables -A INPUT -p tcp -d 172.16.0.2 --dport 22 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -i eth2 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -i eth2 -j ACCEPT
+#iptables -A FORWARD -p tcp --dport 22 -i eth+ -j ACCEPT
+#iptables -A FORWARD -p tcp --sport 22 -i eth+ -j ACCEPT
+iptables -A FORWARD -p tcp -i eth+ --sport 22 -j ACCEPT
+
+#pc1 -   iptables -A INPUT -s 10.0.4.0/24 -j ACCEPT
+#pc1 -   iptables -A OUTPUT -d 10.0.4.0/24 -j ACCEPT
+#pc1 -   iptables -A INPUT -s www.facebook.com -d 157.240.12.38 -j DROP
+
 
 iptables -L -n
 
 #Habilita serviço SSH
-/etc/init.d/ssh start
+/etc/ssh/sshd_config
+
+/usr/sbin/sshd
