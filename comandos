@@ -1,4 +1,30 @@
 https://www.howtogeek.com/168145/how-to-use-ssh-tunneling/
+
+https://www.karlrupp.net/en/computer/nat_tutorial
+
+https://www.youtube.com/watch?v=QzAqcbJ5Zxo
+
+******************************************
+Se você tem um servidor em sua rede interna que deseja disponibilizar externamente, pode usar o alvo -j DNAT da corrente PREROUTING na NAT para especificar um endereço IP e porta de destino para onde encaminhar os pacotes de entrada requisitando uma conexão. Por exemplo: se você deseja encaminhar os pedidos HTTP de entrada para seu servidor Servidor HTTP Apache dedicado para 172.31.0.23, submeta o seguinte comando:
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT \
+      --to 172.31.0.23:80
+
+Esta regra especifica que a tabela NAT usa a corrente PREROUTING embutida para encaminhar pacotes HTTP de entrada exclusivamente para o endereço IP 172.31.0.23 listado.
+
+Nota
+ 	
+Se você tem uma norma default DROP na sua corrente FORWARD, deve adicionar uma regra para permitir o encaminhamento de pedidos HTTP de entrada para possibilitar o roteamento do destino da NAT. Para fazer isso, submeta o seguinte comando:
+
+iptables -A FORWARD -i eth0 -p tcp --dport 80 -d 172.31.0.23 -j ACCEPT
+
+Esta regra permite o encaminhamento de pedidos de entrada HTTP do firewall para seu destino pretendido no Servidor HTTP Apache por trás do firewall. 
+*******************************************
+
+deletar regra no iptables, limpar excluir.
+$ iptables -L --line-numbers 		# vai listar o numero da regra
+$ iptables -D INPUT 4			# -D -> excluir, classe dela INPUT, OUTPUT, numero 4,3,2
+
 tráfego na rede
 $ tcpdump -i eth0 -n
 
