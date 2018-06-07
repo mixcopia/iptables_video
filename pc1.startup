@@ -6,10 +6,13 @@ echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
 adduser pc1
 
+#habilitar telnet
+/etc/init.d/inetd restart
+
 #Habilita serviço SSH
 /etc/ssh/sshd_config
 
-/usr/sbin/sshd start
+/usr/sbin/sshd
 
 #/usr/sbin/telnetd start
 
