@@ -9,4 +9,8 @@ adduser dw1
 #Habilita serviço SSH
 /etc/ssh/sshd_config
 
-/usr/sbin/sshd
+/usr/sbin/sshd start
+
+#/usr/sbin/telnetd start
+
+#/usr/lib/sftp-server start

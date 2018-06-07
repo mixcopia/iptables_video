@@ -7,8 +7,7 @@ https://www.youtube.com/watch?v=QzAqcbJ5Zxo
 ******************************************
 Se você tem um servidor em sua rede interna que deseja disponibilizar externamente, pode usar o alvo -j DNAT da corrente PREROUTING na NAT para especificar um endereço IP e porta de destino para onde encaminhar os pacotes de entrada requisitando uma conexão. Por exemplo: se você deseja encaminhar os pedidos HTTP de entrada para seu servidor Servidor HTTP Apache dedicado para 172.31.0.23, submeta o seguinte comando:
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT \
-      --to 172.31.0.23:80
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 172.31.0.23:80
 
 Esta regra especifica que a tabela NAT usa a corrente PREROUTING embutida para encaminhar pacotes HTTP de entrada exclusivamente para o endereço IP 172.31.0.23 listado.
 

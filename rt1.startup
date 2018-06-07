@@ -1,27 +1,49 @@
 ifconfig eth0 10.0.3.1/24
 ifconfig eth1 10.0.4.1/24
 
-#configuração NAT
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+# configuração NAT POSTROUTING
 iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
 
-#liberando portas
-#iptables -A OUTPUT -o eth2 -p tcp --dport 2233 -m state --state NEW,ESTABLISHED -j ACCEPT
-#iptables -A INPUT -i eth2 -p tcp --sport 2233 -m state --state ESTABLISHED -j ACCEPT
+# configuração NAT PREROUTING
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 22 -j DNAT --to 10.0.3.2
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 22 -j DNAT --to 10.0.4.2
 
-#iptables -A INPUT -p tcp -s 172.16.0.2 --dport 22 -j ACCEPT
-#iptables -A INPUT -p tcp -d 172.16.0.2 --dport 22 -j ACCEPT
-#iptables -A FORWARD -p tcp --dport 22 -i eth+ -j ACCEPT
-#iptables -A FORWARD -p tcp --sport 22 -i eth+ -j ACCEPT
-iptables -A FORWARD -p tcp -i eth+ --sport 9876 -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED, RELATED -j ACCEPT
 
-#pc1 -   iptables -A INPUT -s 10.0.4.0/24 -j ACCEPT
-#pc1 -   iptables -A OUTPUT -d 10.0.4.0/24 -j ACCEPT
-#pc1 -   iptables -A INPUT -s www.facebook.com -d 157.240.12.38 -j DROP
+# liberando portas
+# Permite o acesso ao servidor usando SSH
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
+# Permite o acesso ao servidor usando FTP
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT 
+
+# Permite o acesso ao servidor usando TELNET
+iptables -A INPUT -p tcp --dport 23 -j ACCEPT 
+
+# encaminhamento das portas 22 de origem
+iptables -A FORWARD -p tcp -i eth+ --sport 22 -j ACCEPT
+
+# Libera o tráfego de pacotes da rede interna para a rede externa na porta 22 (ssh)
+iptables -A FORWARD -i eth+ -o eth+ -p tcp --dport 22 -j ACCEPT
+
+# Libera o tráfego de pacotes da rede interna para a rede externa na porta 21 (ftp)
+iptables -A FORWARD -i eth+ -o eth+ -p tcp --dport 21 -j ACCEPT 
+
+# Libera o tráfego de pacotes da rede interna para a rede externa na porta 21 (Telnet)
+iptables -A FORWARD -i eth+ -o eth+ -p tcp --dport 23 -j ACCEPT 
+
+# saídas 
+iptables -A OUTPUT -m state --state NEW, ESTABLISHED, RELATED -j ACCEPT 
 
 iptables -L -n
 
 #Habilita serviço SSH
 /etc/ssh/sshd_config
 
-/usr/sbin/sshd
+/usr/sbin/sshd start
+
+#/usr/sbin/telnetd start
+
+#/usr/lib/sftp-server start
