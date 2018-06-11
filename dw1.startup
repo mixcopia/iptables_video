@@ -9,11 +9,5 @@ adduser dw1
 #habilitar telnet
 /etc/init.d/inetd restart
 
-#Habilita serviço SSH
-/etc/ssh/sshd_config
-
 /usr/sbin/sshd
 
-#/usr/sbin/telnetd start
-
-#/usr/lib/sftp-server start
